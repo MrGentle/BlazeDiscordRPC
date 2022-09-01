@@ -25,8 +25,8 @@ namespace BlazeDiscordRPC {
 		}
 
         static Activity activity = new Activity {
+            Details = "R2MM LLBlaze Discord Rich presence",
             State = getLaunchMessage(),
-            Details = "",
         };
 
 
@@ -53,8 +53,8 @@ namespace BlazeDiscordRPC {
                 discord = new Discord.Discord(1014254157353455656, (UInt64)CreateFlags.Default);
                 activityManager = discord.GetActivityManager();
                 activityManager.RegisterSteam(553310);
+                activity.Assets.LargeImage = "logo1";
                 activityManager.UpdateActivity(activity, (res) => {});
-                activity.Assets.LargeImage = "icon";
                 discordInitialized = true;
 			} else {
                 BlazeDiscordRPC.Log.LogFatal("Discord is not running: Can't provide rich presence");
@@ -72,41 +72,51 @@ namespace BlazeDiscordRPC {
 
         private static string getLaunchMessage() {
             List<string> quotes = new() {
-                "Blaze initializing",
-                "Loading mods",
-                "New challenger approaches",
-                "Loading blazingly fast",
-                "Lethal loading",
-                "Time to grind!",
-                "About to ball!",
-                "Putting on anti-gravity pants",
-                "Loading Elevator...",
-                "*Doombox noises*",
-                "Watching Intro",
-                "Revving up the game engine",
-                "*Dial-up noises*",
-                "Injecting skills",
-                "Skipping intro",
-                "Putting on the Blazer",
-                "Slapping that like button",
-                "*Checks rich presence*",
-                "Cranking the knob to 11",
-                "Hamster winding up",
-                "Local Blaze players near you",
-                "Let's roll!",
-                "Ez prei",
-                "*Spamming smash parry*",
-                "Locked in deadframes",
-                "Host advantage!!",
-                "Speedrunning the loading screen",
-                "@LFG",
-                "Surfing the information highway",
-                "Checking BlazeLB",
-                "WITNESS!",
-                "Ready to fight",
-                "Loading fresh beats",
-                "Stretching hands",
-                "Cracking knuckles"
+                "- Blaze initializing",
+                "- Loading mods",
+                "- A new challenger approaches",
+                "- Loading blazingly fast",
+                "- Lethal loading",
+                "- Time to grind!",
+                "- About to ball!",
+                "- Putting on anti-gravity pants",
+                "- Loading Elevator...",
+                "- * Doombox noises *",
+                "- Watching Intro",
+                "- Revving up the game engine",
+                "- * Dial-up noises *",
+                "- Injecting skills",
+                "- Skipping intro",
+                "- Putting on the Blazer",
+                "- Slapping that like button",
+                "- * Checks rich presence *",
+                "- Cranking the knob to 11",
+                "- Hamster winding up",
+                "- Local Blaze players near you",
+                "- Let's roll!",
+                "- Ez prei",
+                "- * Spamming smash parry *",
+                "- Locked in deadframes",
+                "- Host advantage!!",
+                "- Speedrunning the loading screen",
+                "- @LFG",
+                "- Surfing the information highway",
+                "- Checking BlazeLB",
+                "- WITNESS!",
+                "- Ready to fight",
+                "- Loading fresh beats",
+                "- Stretching hands",
+                "- Cracking knuckles",
+                "- Brandishing Candycane",
+                "- Testing speakers",
+                "- Roaming the streets",
+                "- Stearing at intro screen",
+                "- Watching bots play",
+                "- Get it on the ThunderStore",
+                "- Resetting timer",
+                "- Contemplating life choices",
+                "- Axelotl is my king",
+                "- just after these messages"
 			};
 
             return quotes[(new System.Random()).Next(quotes.Count)];

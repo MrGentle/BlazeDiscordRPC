@@ -5,80 +5,76 @@ using System.Text;
 using LLBML;
 using UnityEngine;
 using Discord;
+using LLBML.Players;
 
 namespace BlazeDiscordRPC {
 	public class GameIntegration : MonoBehaviour {
 
-		private Activity lastActivity;
+		private Activity activity = new Activity();
+		string status = "";
 
 		void Awake() {
 			LLBML.GameEvents.GameStateEvents.OnStateChange += HandleGameStateEvent;
-			LLBML.GameEvents.LobbyEvents.OnLobbyEntered += HandleLobbyEnteredEvent;
-			LLBML.GameEvents.LobbyEvents.OnLobbyReady += HandleLobbyReadyEvent;
 		}
 
 		public void HandleGameStateEvent(object sender, LLBML.GameEvents.OnStateChangeArgs args) {
 			BlazeDiscordRPC.Log.LogInfo($"{args.newState}");
 
-			Activity activity = new Activity ();
-
 			OnlineMode onlineMode = JOMBNFKIHIC.EAENFOJNNGP;
 			JOMBNFKIHIC game = JOMBNFKIHIC.GIGAKBJGFDI;
 
-            
-			string icon = "icon";
-            string largeText = "";
+			string details = "";
+			long startTime = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalSeconds;
 			bool updateActivity = true;
 			bool playing = false;
-			string character = "";
+			string characterName = "";
+			Character character = Character.NONE;
 
-			if (game.OOEPDFABFIP != 0) {
-                icon = game.OOEPDFABFIP.ToString();
-                largeText = "Map: " + icon;
-            }
 
 			switch (args.newState) {
-				case var value when value == LLBML.States.GameState.MENU: activity.State = "In Main Menu"; break;
+				case var value when value == LLBML.States.GameState.MENU: status = "In Main Menu"; break;
+				case var value when value == LLBML.States.GameState.UNLOCKS: status = "Browsing Collection"; break;
 
-				case var value when value == LLBML.States.GameState.STORY_GRID: activity.State = "In Story Selection"; break;
-				case var value when value == LLBML.States.GameState.STORY_COMIC: activity.State = "In Story Comic"; break;
+				case var value when value == LLBML.States.GameState.STORY_GRID: status = "In Story Selection"; break;
+				case var value when value == LLBML.States.GameState.STORY_COMIC: status = "In Story Comic"; break;
 
-				case var value when value == LLBML.States.GameState.LOBBY_STORY: activity.State = "Character Select: Story"; break;
-				case var value when value == LLBML.States.GameState.LOBBY_CHALLENGE: activity.State = "Character Select: Arcade"; break;
-				case var value when value == LLBML.States.GameState.LOBBY_LOCAL: activity.State = "In Local Lobby"; break;
-				case var value when value == LLBML.States.GameState.LOBBY_TRAINING: activity.State = "Character Select: Training"; break;
-				case var value when value == LLBML.States.GameState.LOBBY_TUTORIAL: activity.State = "Character Select: Tutorial"; break;
+				case var value when value == LLBML.States.GameState.LOBBY_STORY: status = "Character Select: Story"; break;
+				case var value when value == LLBML.States.GameState.LOBBY_CHALLENGE: status = "Character Select: Arcade"; break;
+				case var value when value == LLBML.States.GameState.LOBBY_LOCAL: status = "In Local Lobby"; break;
+				case var value when value == LLBML.States.GameState.LOBBY_TRAINING: status = "Character Select: Training"; break;
+				case var value when value == LLBML.States.GameState.LOBBY_TUTORIAL: status = "Character Select: Tutorial"; break;
 					
 
 				case var value when value == LLBML.States.GameState.LOBBY_ONLINE:
 					switch (onlineMode) {
-						case OnlineMode.QUICKMATCH: activity.State = "Searching for Quick Match"; break;
-						case OnlineMode.RANKED: activity.State = "Searching for Ranked Match"; break;
-						case OnlineMode.HOSTED: activity.State = "In Private Lobby"; break;
+						case OnlineMode.QUICKMATCH: status = "Searching for Quick Match"; break;
+						case OnlineMode.RANKED: status = "Searching for Ranked Match"; break;
+						case OnlineMode.HOSTED: status = "In Private Lobby"; break;
 					}
 					break;
 
-				
+
+
 				case var value when value == LLBML.States.GameState.GAME_INTRO:
 					switch (args.oldState) {
-						case var lobby when lobby == LLBML.States.GameState.LOBBY_CHALLENGE: activity.State = "In Arcade Mode"; break;
-						case var lobby when lobby == LLBML.States.GameState.LOBBY_LOCAL: activity.State = "In Local Match"; break;
+						case var lobby when lobby == LLBML.States.GameState.CHALLENGE_LADDER: status = "In Arcade Mode"; break;
+						case var lobby when lobby == LLBML.States.GameState.LOBBY_LOCAL: status = "In Local Match"; break;
 						case var lobby when lobby == LLBML.States.GameState.LOBBY_ONLINE:
 							switch (onlineMode) {
-								case OnlineMode.QUICKMATCH: activity.State = "In Quick Match"; break;
-								case OnlineMode.RANKED: activity.State = "In Ranked Match"; break;
-								case OnlineMode.HOSTED: activity.State = "In Private Match"; break;
+								case OnlineMode.QUICKMATCH: status = "In Quick Match"; break;
+								case OnlineMode.RANKED: status = "In Ranked Match"; break;
+								case OnlineMode.HOSTED: status = "In Private Match"; break;
 							}
 							break;
-						case var lobby when lobby == LLBML.States.GameState.LOBBY_STORY: activity.State = "In Story Mode"; break;
-						case var lobby when lobby == LLBML.States.GameState.LOBBY_TRAINING: activity.State = "In Training Mode"; break;
-						case var lobby when lobby == LLBML.States.GameState.LOBBY_TUTORIAL: activity.State = "In Tutorial"; break;
+						case var lobby when lobby == LLBML.States.GameState.STORY_COMIC: status = "In Story Mode"; break;
+						case var lobby when lobby == LLBML.States.GameState.LOBBY_TRAINING: status = "In Training Mode"; break;
+						case var lobby when lobby == LLBML.States.GameState.LOBBY_TUTORIAL: status = "In Tutorial"; break;
 					}
 					break;
 
 				case var value when value == LLBML.States.GameState.GAME:
-					activity = lastActivity;
-					character = LLBML.Utils.StringUtils.characterNames[LLBML.Players.Player.GetLocalPlayer().Character];
+					character = Player.GetLocalPlayer().Character;
+					characterName = character == Character.ELECTRO ? "Grid" : LLBML.Utils.StringUtils.characterNames[character];
 					playing = true;
 					break;
 
@@ -87,36 +83,38 @@ namespace BlazeDiscordRPC {
 					break;
 			}
 
-			if (playing) {
-                activity.Timestamps = new ActivityTimestamps() { Start = 0 };
-                activity.Assets.LargeImage = icon.ToLower();
-                activity.Assets.LargeText = largeText;
-            } else {
-                activity.Details = "";
-                activity.Timestamps = new ActivityTimestamps();
-                activity.Assets.LargeImage = "icon";
-                activity.Assets.LargeText = "Lethal League Blaze";
-            }
+			if (updateActivity) {
+				if (playing) {
+					activity.Timestamps = new ActivityTimestamps() { Start = startTime };
 
-            //Debug.Log(chara);
-            if (character.Length > 0 && playing) {
-                activity.Assets.SmallImage = CharacterApi.GetCharacterByName(character).ToString();
-                activity.Assets.SmallText = "Playing " + character;
-            } else {
-                activity.Assets.SmallImage = "";
-                activity.Assets.SmallText = "";
-            }
+					if (characterName.Length > 0) {
+						activity.Assets.SmallImage = character.ToString().ToLower();
+						activity.Assets.SmallText = "Playing " + characterName;
+						details = activity.Assets.SmallText + Environment.NewLine;
+					}
 
-			lastActivity = activity;
-			DiscordInterface.SetActivity(activity);
-		}
+					if (game.OOEPDFABFIP != 0) {
+						string stage = game.OOEPDFABFIP.ToString().ToLower();
+						activity.Assets.LargeImage = stage;
+						string formattedStage = $"{char.ToUpper(stage[0])}{stage.Substring(1)}";
+						if (stage.EndsWith("_2d")) formattedStage = "Retro " + $"{formattedStage}".Replace("_2d", "");
+						activity.Assets.LargeText = $"on {formattedStage}";
+						details += activity.Assets.LargeText;
+					}
+					
+				} else {
+					activity.Timestamps = new ActivityTimestamps();
+					activity.Assets.LargeImage = "logo1";
+					activity.Assets.LargeText = "Lethal League Blaze";
+					activity.Assets.SmallImage = "";
+					activity.Assets.SmallText = "";
+				}
 
-		public void HandleLobbyEnteredEvent(object sender, LLBML.GameEvents.LobbyEventArgs args) {
-			BlazeDiscordRPC.Log.LogInfo($"Host id: {args.host_id} Lobby id: {args.lobby_id}");
-		}
+				activity.State = status + Environment.NewLine;
+				activity.Details = details;
 
-		public void HandleLobbyReadyEvent(object sender, LLBML.GameEvents.OnLobbyReadyArgs args) {
-			BlazeDiscordRPC.Log.LogInfo($"Host id: {args.host_id} Lobby id: {args.lobby_id}");
+				DiscordInterface.SetActivity(activity);
+			}
 		}
 	}
 }
