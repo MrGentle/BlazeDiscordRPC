@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using BepInEx;
 using HarmonyLib;
-using BepInEx.Logging;
-using UnityEngine;
 using Discord;
 using System.Diagnostics;
 using System.IO;
-using LLBML;
 
 
 namespace BlazeDiscordRPC {

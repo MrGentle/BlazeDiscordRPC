@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LLBML;
 using UnityEngine;
 using Discord;
 using LLBML.Players;
@@ -77,6 +73,11 @@ namespace BlazeDiscordRPC {
 					characterName = character == Character.ELECTRO ? "Grid" : LLBML.Utils.StringUtils.characterNames[character];
 					playing = true;
 					break;
+				
+				case var value when value == LLBML.States.GameState.QUIT:
+					StartCoroutine(BlazeLBInterface.UpdateStatus(new Activity(), "false"));
+					updateActivity = false;
+					break;
 
 				default:
 					updateActivity = false;
@@ -90,7 +91,7 @@ namespace BlazeDiscordRPC {
 					if (characterName.Length > 0) {
 						activity.Assets.SmallImage = character.ToString().ToLower();
 						activity.Assets.SmallText = "Playing " + characterName;
-						details = activity.Assets.SmallText + Environment.NewLine;
+						details = activity.Assets.SmallText + " ";
 					}
 
 					if (game.OOEPDFABFIP != 0) {
@@ -110,9 +111,10 @@ namespace BlazeDiscordRPC {
 					activity.Assets.SmallText = "";
 				}
 
-				activity.State = status + Environment.NewLine;
+				activity.State = status;
 				activity.Details = details;
 
+				StartCoroutine(BlazeLBInterface.UpdateStatus(activity, "true"));
 				DiscordInterface.SetActivity(activity);
 			}
 		}

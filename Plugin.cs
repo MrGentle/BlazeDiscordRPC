@@ -1,12 +1,8 @@
 ﻿using BepInEx;
 using HarmonyLib;
 using BepInEx.Logging;
-using UnityEngine;
-using System;
 using Discord;
-using System.Diagnostics;
-using System.IO;
-using LLBML;
+
 
 namespace BlazeDiscordRPC
 {
@@ -32,12 +28,11 @@ namespace BlazeDiscordRPC
             }
         }
 
-        void OnDestroy()
-        {
+        void OnDestroy() {
             Log.LogInfo("Clearing discord status....");
             DiscordInterface.activityManager.ClearActivity((res) => {
                 if (res == Result.Ok) Log.LogInfo("Cleared discord status on exit");
-                else Log.LogInfo(res);
+                else Log.LogError(res);
             });
             DiscordInterface.discord.Dispose();
         }
