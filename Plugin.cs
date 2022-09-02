@@ -6,7 +6,7 @@ using Discord;
 
 namespace BlazeDiscordRPC
 {
-    [BepInPlugin("no.gentle.plugin.blazediscordrpc", "BlazeDiscordRPC", "0.0.1")]
+    [BepInPlugin("no.gentle.plugin.blazediscordrpc", "BlazeDiscordRPC", "0.0.4")]
     [BepInDependency(LLBML.PluginInfos.PLUGIN_ID)]
     public class BlazeDiscordRPC : BaseUnityPlugin {
         internal static BlazeDiscordRPC Instance { get; private set; } = null;

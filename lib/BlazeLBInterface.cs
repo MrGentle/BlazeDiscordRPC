@@ -13,7 +13,7 @@ namespace BlazeDiscordRPC {
             form.AddField("state", activity.State != null ? activity.State : "");
 			form.AddField("details", activity.Details != null ? activity.Details : "");
 
-            using (UnityWebRequest www = UnityWebRequest.Post("http://localhost:3000/api/users/llb-status", form)) {
+            using (UnityWebRequest www = UnityWebRequest.Post("https://blazelb.xyz/api/users/llb-status", form)) {
                 yield return www.SendWebRequest();
                 if (www.isNetworkError || www.isHttpError) BlazeDiscordRPC.Log.LogError(www.error);
             }

@@ -70,6 +70,7 @@ namespace BlazeDiscordRPC {
 
 				case var value when value == LLBML.States.GameState.GAME:
 					character = Player.GetLocalPlayer().Character;
+					//Glom forgot Grid existed... Does he actually exist? idk
 					characterName = character == Character.ELECTRO ? "Grid" : LLBML.Utils.StringUtils.characterNames[character];
 					playing = true;
 					break;

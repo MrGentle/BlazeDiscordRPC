@@ -112,7 +112,7 @@ namespace BlazeDiscordRPC {
                 "- Get it on the ThunderStore",
                 "- Resetting timer",
                 "- Contemplating life choices",
-                "- Axelotl is my king",
+                "- axolotl is my king",
                 "- just after these messages"
 			};
 
